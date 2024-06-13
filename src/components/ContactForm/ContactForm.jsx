@@ -1,12 +1,12 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useId } from "react";
-import * as Yup from "yup";
-import PropTypes from 'prop-types';
-import css from "./ContactForm.module.css"
+import { Formik, Form, Field, ErrorMessage } from 'formik'; 
+import * as Yup from 'yup'; 
+import { useDispatch } from 'react-redux'; 
+import { addContact } from '../../redux/contactsSlice'; 
+import css from './ContactForm.module.css';
 
-const ContactForm = ({ addContact }) => {
-    const nameFieldId = useId();
-    const numberFieldId = useId();
+const ContactForm = () => {
+
+    const dispatch = useDispatch();
 
     const feedbackSchema = Yup.object().shape({
         name: Yup.string().min(3, "Too short!").max(50, "Too long!").required("Required"),
@@ -18,21 +18,23 @@ const ContactForm = ({ addContact }) => {
         number: ""
     }
 
+    const handleSubmit = (values, {resetForm}) => {
+        dispatch(addContact(values.name, values.number));
+        resetForm();
+    }
+
     return (
         <div className={css.formContainer}>
-            <Formik initialValues={initialValues} validationSchema={feedbackSchema} onSubmit={(values, actions) => {
-                addContact(values); 
-                actions.resetForm(); 
-            }}>
+            <Formik initialValues={initialValues} validationSchema={feedbackSchema} onSubmit={handleSubmit}>
                 <Form>
                     <div className={css.formGroup}>
-                        <label htmlFor={nameFieldId} className={css.label}>Name</label>
-                        <Field type="text" name="name" id={nameFieldId} className={css.inputField} />
+                        <label htmlFor="number" className="number">Name</label>
+                        <Field type="text" name="name" id="number" className={css.inputField} />
                         <ErrorMessage name="name" component="span" className={css.errorMessage} />
                     </div>
                     <div className={css.formGroup}>
-                        <label htmlFor={numberFieldId} className={css.label}>Number</label>
-                        <Field type="text" name="number" id={numberFieldId} className={css.inputField} />
+                        <label htmlFor="number" className={css.label}>Number</label>
+                        <Field type="text" name="number" id="number" className={css.inputField} />
                         <ErrorMessage name="number" component="span" className={css.errorMessage} />
                     </div>
                     <button type="submit" className={css.submitBtn}>Add contact</button>
@@ -41,9 +43,5 @@ const ContactForm = ({ addContact }) => {
         </div>
     );
 };
-
-ContactForm.propTypes = {
-    addContact: PropTypes.func.isRequired,
-}
 
 export default ContactForm;

@@ -1,7 +1,13 @@
-import PropTypes from 'prop-types';
 import css from "./SearchBox.module.css"
+import { useDispatch } from 'react-redux';
+import {changeFilter} from '../../redux/filtersSlice'
 
-const SearchBox = ({ handleSearch }) => {
+const SearchBox = () => {
+    const dispatch = useDispatch();
+    const handleSearch = (e) => {
+        dispatch(changeFilter(e.target.value));
+    }
+
     return (
         <div className={css.searchBoxContainer}>
             <p className={css.searchBoxText}>Find contacts by name</p>
@@ -10,8 +16,5 @@ const SearchBox = ({ handleSearch }) => {
     );
 };
 
-SearchBox.propTypes = {
-    handleSearch: PropTypes.func.isRequired,
-};
 
 export default SearchBox;
